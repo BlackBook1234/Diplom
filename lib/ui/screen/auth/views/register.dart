@@ -19,8 +19,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final List<String> menuItems = ["Багш", "Оюутан"];
-  String selectedMenu = "Оюутан";
+  String selectedMenuTeacher = "Багш";
+  String selectedMenuStudent = "Оюутан";
 
   @override
   void dispose() {
@@ -63,37 +63,37 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                 ),
                 const SizedBox(height: 50),
-                Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    iconEnabledColor: Colors.black,
-                    dropdownColor: Colors.white,
-                    value: selectedMenu,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    items: menuItems.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    underline: Container(height: 0, color: Colors.transparent),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedMenu = value!;
-                      });
-                    },
-                  ),
-                ),
+                // Container(
+                //   height: 50,
+                //   decoration: BoxDecoration(
+                //     color: Colors.white,
+                //     borderRadius: BorderRadius.circular(12),
+                //   ),
+                //   child: DropdownButton<String>(
+                //     isExpanded: true,
+                //     iconEnabledColor: Colors.black,
+                //     dropdownColor: Colors.white,
+                //     value: selectedMenu,
+                //     padding: const EdgeInsets.symmetric(horizontal: 10),
+                //     style: const TextStyle(
+                //       color: Colors.black,
+                //       fontSize: 12,
+                //       fontWeight: FontWeight.w500,
+                //     ),
+                //     items: menuItems.map((String value) {
+                //       return DropdownMenuItem<String>(
+                //         value: value,
+                //         child: Text(value),
+                //       );
+                //     }).toList(),
+                //     underline: Container(height: 0, color: Colors.transparent),
+                //     onChanged: (value) {
+                //       setState(() {
+                //         selectedMenu = value!;
+                //       });
+                //     },
+                //   ),
+                // ),
                 const SizedBox(height: 20),
                 CustomTextfield(hintText: "Код", controller: nameController),
                 const SizedBox(height: 20),
@@ -113,7 +113,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           emailController.text,
                           passwordController.text,
                           nameController.text,
-                          selectedMenu,
+                          nameController.text.startsWith("B")
+                              ? selectedMenuStudent
+                              : selectedMenuTeacher,
                         );
                   },
                   child: const Text(

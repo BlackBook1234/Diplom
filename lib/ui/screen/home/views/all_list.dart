@@ -5,10 +5,14 @@ import 'package:chat_system/ui/screen/auth/cubit/auth_cubit.dart';
 import 'package:chat_system/ui/screen/chat/views/group_chat.dart';
 import 'package:chat_system/ui/screen/chat/views/private_chat.dart';
 import 'package:chat_system/ui/screen/home/cubit/home_cubit.dart';
+import 'package:chat_system/ui/widget/common/button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'edit_user.dart';
 
 class SearchAllScreen extends ConsumerStatefulWidget {
   static const String routeName = '/select-contact';
@@ -34,6 +38,74 @@ class SearchAllScreenState extends ConsumerState<SearchAllScreen> {
         'profilePic': selectedContact.profilePic,
       },
     );
+  }
+
+  void _chooseAction(
+      String uid, bool isGroupChat, Group groupData, UserModel userData) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: const Column(children: [
+                Center(
+                    child: Text("Хэрэглэгч",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: kPrimaryColor))),
+                Divider()
+              ]),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: PrimaryButton(
+                        height: 40,
+                        borderRadius: 16,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => EditScreen(
+                                  isGroupChat: isGroupChat,
+                                  groupData: groupData,
+                                  userData: userData),
+                            ),
+                          );
+                        },
+                        color: kDisable,
+                        child: const Center(
+                          child: Text("Засах",
+                              style: TextStyle(color: kPrimaryColor)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 6,
+                    ),
+                    Expanded(
+                      child: PrimaryButton(
+                        height: 40,
+                        borderRadius: 16,
+                        onPressed: () {
+                          context
+                              .read<HomeCubit>()
+                              .deleteChat(uid, isGroupChat);
+                          Navigator.pop(context);
+                        },
+                        color: kPrimaryColor,
+                        child: const Center(
+                            child: Text(
+                          "Устгах",
+                          style: TextStyle(color: Colors.white),
+                        )),
+                      ),
+                    ),
+                  ],
+                ),
+              ]);
+        });
   }
 
   @override
@@ -180,6 +252,31 @@ class SearchAllScreenState extends ConsumerState<SearchAllScreen> {
                                                       ? Colors.green.shade400
                                                       : Colors.grey.shade300),
                                             )),
+                                        if (context
+                                                .read<AuthCubit>()
+                                                .state
+                                                .userInfo
+                                                .role ==
+                                            "ADMIN")
+                                          Positioned(
+                                            right: 10,
+                                            top: 0,
+                                            bottom: 0,
+                                            child: InkWell(
+                                              onTap: () {
+                                                _chooseAction(userData.uid,
+                                                    false, Group(), userData);
+                                              },
+                                              child: CircleAvatar(
+                                                radius: 7,
+                                                backgroundColor:
+                                                    kBackgroundColor,
+                                                child: Icon(
+                                                  Icons.edit_square,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                       ],
                                     ),
                                   ),
@@ -262,6 +359,31 @@ class SearchAllScreenState extends ConsumerState<SearchAllScreen> {
                                                       ? Colors.green.shade400
                                                       : Colors.grey.shade300),
                                             )),
+                                        if (context
+                                                .read<AuthCubit>()
+                                                .state
+                                                .userInfo
+                                                .role ==
+                                            "ADMIN")
+                                          Positioned(
+                                            right: 10,
+                                            top: 0,
+                                            bottom: 0,
+                                            child: InkWell(
+                                              onTap: () {
+                                                _chooseAction(userData.uid,
+                                                    false, Group(), userData);
+                                              },
+                                              child: CircleAvatar(
+                                                radius: 7,
+                                                backgroundColor:
+                                                    kBackgroundColor,
+                                                child: Icon(
+                                                  Icons.edit_square,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                       ],
                                     ),
                                   ),
@@ -315,7 +437,6 @@ class SearchAllScreenState extends ConsumerState<SearchAllScreen> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
@@ -364,11 +485,37 @@ class SearchAllScreenState extends ConsumerState<SearchAllScreen> {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           12)),
-                                              child: Icon(Icons.group,
-                                                  color: Colors.white,size: 14,),
+                                              child: Icon(
+                                                Icons.group,
+                                                color: Colors.white,
+                                                size: 14,
+                                              ),
                                             )),
                                       ],
                                     ),
+                                    if (context
+                                            .read<AuthCubit>()
+                                            .state
+                                            .userInfo
+                                            .role ==
+                                        "ADMIN")
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 10),
+                                        child: InkWell(
+                                          onTap: () {
+                                            _chooseAction(groupData.groupId,
+                                                true, groupData, UserModel());
+                                          },
+                                          child: CircleAvatar(
+                                            radius: 7,
+                                            backgroundColor: kBackgroundColor,
+                                            child: Icon(
+                                              Icons.edit_square,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                   ],
                                 ),
                               ),
@@ -408,33 +555,65 @@ class SearchAllScreenState extends ConsumerState<SearchAllScreen> {
                                   children: [
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        SizedBox(
-                                          width: 42,
-                                          height: 42,
-                                          child: groupData.groupPic == ""
-                                              ? CircleAvatar(
-                                                  backgroundColor: primaryColor
-                                                      .withOpacity(0.5),
-                                                  child: Icon(Icons.person,
-                                                      size: 32,
-                                                      color: Colors.white),
-                                                )
-                                              : ClipOval(
-                                                  child: Image.network(
-                                                    groupData.groupPic,
-                                                    width: 42,
-                                                    height: 42,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 42,
+                                              height: 42,
+                                              child: groupData.groupPic == ""
+                                                  ? CircleAvatar(
+                                                      backgroundColor:
+                                                          primaryColor
+                                                              .withOpacity(0.5),
+                                                      child: Icon(Icons.person,
+                                                          size: 32,
+                                                          color: Colors.white),
+                                                    )
+                                                  : ClipOval(
+                                                      child: Image.network(
+                                                        groupData.groupPic,
+                                                        width: 42,
+                                                        height: 42,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                            ),
+                                            SizedBox(width: 10),
+                                            Text(groupData.name,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 14)),
+                                          ],
                                         ),
-                                        SizedBox(width: 10),
-                                        Text(groupData.name,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 14)),
+                                        if (context
+                                                .read<AuthCubit>()
+                                                .state
+                                                .userInfo
+                                                .role ==
+                                            "ADMIN")
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10),
+                                            child: InkWell(
+                                              onTap: () {
+                                                _chooseAction(
+                                                    groupData.groupId,
+                                                    true,
+                                                    groupData,
+                                                    UserModel());
+                                              },
+                                              child: CircleAvatar(
+                                                radius: 7,
+                                                backgroundColor:
+                                                    kBackgroundColor,
+                                                child: Icon(
+                                                  Icons.edit_square,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                       ],
                                     ),
                                     Positioned(
@@ -462,6 +641,7 @@ class SearchAllScreenState extends ConsumerState<SearchAllScreen> {
                     },
                   );
                 }),
+            SizedBox(height: 120),
           ],
         ),
       ),

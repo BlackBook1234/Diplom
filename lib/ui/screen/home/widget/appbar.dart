@@ -1,8 +1,6 @@
 import 'package:chat_system/constants.dart';
-import 'package:chat_system/ui/screen/auth/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_system/ui/screen/group/views/create_group.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   const AppBarWidget({super.key, required this.selectedIndex});
@@ -46,7 +44,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   }
 
   List<Widget> _buildChatActions(BuildContext context) => [
-        if (context.read<AuthCubit>().state.userInfo.role == "Багш")
+        // if (context.read<AuthCubit>().state.userInfo.role == "Багш")
           PopupMenuButton(
             icon: Icon(Icons.more_vert,
                 color: Theme.of(context).colorScheme.onPrimary),

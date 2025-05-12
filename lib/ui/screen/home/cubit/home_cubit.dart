@@ -90,6 +90,22 @@ class HomeCubit extends Cubit<HomeState> {
     });
   }
 
+  Future<void> deleteChat(String uid, bool isGroupChat) async {
+    if (isGroupChat) {
+      final groupsCollection = _fire.collection('groups');
+      final doc = await groupsCollection.doc(uid).get();
+      if (doc.exists) {
+        await groupsCollection.doc(uid).delete();
+      }
+    } else {
+      final usersChatCollection = _fire.collection('users');
+      final doc = await usersChatCollection.doc(uid).get();
+      if (doc.exists) {
+        await usersChatCollection.doc(uid).delete();
+      }
+    }
+  }
+
   Stream<List<ChatContact>> getChatContacts(String uid) {
     return _fire
         .collection('users')
@@ -97,7 +113,6 @@ class HomeCubit extends Cubit<HomeState> {
         .collection('chats')
         .snapshots()
         .asyncMap((event) async {
-        
       List<ChatContact> contacts = [];
       for (var document in event.docs) {
         var chatContact = ChatContact.fromJson(document.data());
